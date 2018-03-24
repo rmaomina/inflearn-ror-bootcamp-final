@@ -79,11 +79,11 @@ Rails.application.configure do
   
   config.action_mailer.delivery_method = :mailgun
   config.action_mailer.mailgun_settings = {
-  		api_key: '{please_insert}',
-  		domain: '{please_insert}'
+  		api_key: 'key-1161643a268b3faea0050697b83e1c68',
+  		domain: 'sandbox723333e4a1024e11aea3280d869090d9.mailgun.org'
   }
   
   config.action_mailer.default_url_options = {
-    :host => "{please_insert}"
+    :host => "https://rails-project-sypark.c9users.io/"
   }
 end

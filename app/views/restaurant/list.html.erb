@@ -2,45 +2,7 @@
 <div class="row" id="map-wrapper">
   <div class="col-md-7">
     <div class="content">
-      <div class="property-row">
-            <a href="#" class="property-row-image">
-                <img class="img img-thumbnail" src="http://placehold.it/240x240" alt="">
-            </a>
-            <div class="property-row-content">
-                <h2 class="property-row-title">
-                    <%= link_to '식당 샘플', restaurant_detail_path(:id => 1) %>
-                </h2>
-            
-                <ul class="property-row-location">
-                    <li><a href="#">New York</a>,</li>
-                    <li><a href="#">Brooklyn</a></li>
-                </ul>
-            
-                <div class="property-row-body">
-                    <p>
-                    상세 설명이 들어갑니다.
-                    </p>
-                </div>
-            
-                <div class="property-row-meta">
-                    <div class="property-row-meta-item">
-                        <span><i class="fa fa-star"></i></span>
-                        <strong>4.8</strong>
-                    </div>
-            
-                    <div class="property-row-meta-item">
-                        <span><i class="fa fa-pencil"></i></span>
-                        <strong>99</strong>
-                    </div>
-            
-                    <div class="property-row-meta-item">
-                        <span><i class="fa fa-commenting-o"></i></span>
-                        <strong>1,203</strong>
-                    </div>
-                </div>
-            
-            </div>
-      </div>
+        
     </div>
   </div>
   <div class="col-md-5" id="map"></div>
@@ -58,29 +20,48 @@
 </style>
 
 <script>
-    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-    var options = { //지도를 생성할 때 필요한 기본 옵션
-    	center: new daum.maps.LatLng(37.529838, 126.964519), //지도의 중심좌표.
-    	level: 3 //지도의 레벨(확대, 축소 정도)
-    };
+    var map = null;
+    var markers = [];
     
-    var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
-    var positions = [
-            {
-                content: '<div style="padding:5px; width:200px; text-align:center;">샘플<br>주소정보</div>',
-                latlng: new daum.maps.LatLng(37.542939,126.9639333)
-            },
-        ];
+    function clearMarkers() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
     
+    function getRestaurants() {
+        clearMarkers();
+        
+         var bounds = map.getBounds();
+         // 영역의 남서쪽 좌표를 얻어옵니다 
+         var swLatLng = bounds.getSouthWest(); 
+        
+         // 영역의 북동쪽 좌표를 얻어옵니다 
+         var neLatLng = bounds.getNorthEast(); 
+         
+         var minLng = swLatLng.getLng();
+         var maxLng = neLatLng.getLng();
+         var minLat = swLatLng.getLat();
+         var maxLat = neLatLng.getLat();
+         
+         console.log('min:'+minLat+','+minLng+' max:'+maxLat+','+maxLng);
+         
+        
+        $.get("/restaurant/map",{ minLat: minLat, minLng: minLng, maxLat:maxLat, maxLng:maxLng }, function( data ) {
+            $('.content').html(data);
+        });
+    }
     
-    for (var i = 0; i < positions.length; i++) {
+    function createMarker(name, address, lat, lng) {
+        var content = '<div style="padding:5px; width:200px; text-align:center;"><strong>'+name+'</strong><br>'+address+'</div>';
         var marker = new daum.maps.Marker({
             map: map,
-            position: positions[i].latlng
+            position: new daum.maps.LatLng(lat, lng)
         });
         
         var infoWindow = new daum.maps.InfoWindow({
-            content: positions[i].content 
+            content: content
         });
         
         (function(marker, infoWindow) {
@@ -89,9 +70,32 @@
             });
             
             daum.maps.event.addListener(marker, 'mouseout', function() {
-               infoWindow.close(); 
+              infoWindow.close(); 
             });
         })(marker, infoWindow);
+        
+        markers.push(marker);
     }
+    
+    $(window).ready(function() {
+       var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+       var options = { //지도를 생성할 때 필요한 기본 옵션
+        	center: new daum.maps.LatLng(37.529838, 126.964519), //지도의 중심좌표.
+        	level: 3 //지도의 레벨(확대, 축소 정도)
+       }; 
+       
+       map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
+       
+       getRestaurants();
+       
+       
+       daum.maps.event.addListener(map, 'dragend', function() {
+           getRestaurants(); 
+        });
+        daum.maps.event.addListener(map, 'zoom_changed', function() {   
+           getRestaurants();      
+            
+        });
+    });
     
 </script>

@@ -3,34 +3,34 @@
       <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><strong>상점 명</strong></h4>
+                <h4><strong><%=@item.name%></strong></h4>
             </div>
             <div class="panel-body">
                 <div class="row" style="padding:0 10px;">
                     <div class="col-md-6" style="padding:0;">
-                        <img class="img img-thumbnail detail-image" src="http://placehold.it/240x240">
+                        <img class="img img-thumbnail detail-image" src="<%= @item.images[0] ? @item.images[0] : 'http://placehold.it/240x240' %>">
                     </div>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-6" style="padding:0;">
-                                <img class="img img-thumbnail detail-image" src="http://placehold.it/240x240">
+                                <img class="img img-thumbnail detail-image" src="<%= @item.images[1] ? @item.images[1] : 'http://placehold.it/240x240' %>">
                             </div>
                             <div class="col-md-6" style="padding:0;">
-                                <img class="img img-thumbnail detail-image" src="http://placehold.it/240x240">
+                                <img class="img img-thumbnail detail-image" src="<%= @item.images[2] ? @item.images[2] : 'http://placehold.it/240x240' %>">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6" style="padding:0;">
-                                <img class="img img-thumbnail detail-image" src="http://placehold.it/240x240">
+                                <img class="img img-thumbnail detail-image" src="<%= @item.images[3] ? @item.images[3] : 'http://placehold.it/240x240' %>">
                             </div>
                             <div class="col-md-6" style="padding:0;">
-                                <img class="img img-thumbnail detail-image" src="http://placehold.it/240x240">
+                                <img class="img img-thumbnail detail-image" src="<%= @item.images[4] ? @item.images[4] : 'http://placehold.it/240x240' %>">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="well" style="margin-top:10px;">
-                    상세 설명..
+                    <%= @item.description %>
                 </div>
                 
                 <div class="page-header">
@@ -76,7 +76,7 @@
                         <div class="detail-map" id="map"></div>
                     </div>
                     <div class="text-muted" style="margin-top:10px;">
-                        <i class="fa fa-map-marker"></i> 경기도 성남시
+                        <i class="fa fa-map-marker"></i> <%=@item.address%>
                     </div>
                 </div>
             </div>
@@ -87,15 +87,14 @@
 <script>
     var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
     var options = { //지도를 생성할 때 필요한 기본 옵션
-    	center: new daum.maps.LatLng(37.529838, 126.964519), //지도의 중심좌표.
+    	center: new daum.maps.LatLng(<%=@item.lat%>,<%=@item.lng%>), //지도의 중심좌표.
     	level: 3 //지도의 레벨(확대, 축소 정도)
     };
     
     var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
     var positions = [
             {
-                content: '<div style="padding:5px; width:200px; text-align:center;">샘플<br>주소정보</div>',
-                latlng: new daum.maps.LatLng(37.529838, 126.964519)
+                latlng: new daum.maps.LatLng(<%=@item.lat%>,<%=@item.lng%>)
             },
         ];
     

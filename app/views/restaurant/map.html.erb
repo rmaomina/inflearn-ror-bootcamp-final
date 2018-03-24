@@ -1,2 +1,41 @@
-<h1>Restaurant#map</h1>
-<p>Find me in app/views/restaurant/map.html.erb</p>
+<% for item in @items %>
+  <script>createMarker('<%=item.name%>','<%=item.address%>',<%=item.lat%>,<%=item.lng%>);</script>
+  <div class="property-row">
+        <a href="#" class="property-row-image">
+            <img class="img img-thumbnail" src="<%=item.images[0]%>" alt="">
+        </a>
+        <div class="property-row-content">
+            <h2 class="property-row-title">
+                <%= link_to item.name, restaurant_detail_path(:id => item.id) %>
+            </h2>
+        
+            <ul class="property-row-location">
+                <li><%=item.address%></li>
+            </ul>
+        
+            <div class="property-row-body">
+                <p>
+                <%=item.description%>
+                </p>
+            </div>
+        
+            <div class="property-row-meta">
+                <div class="property-row-meta-item">
+                    <span><i class="fa fa-star"></i></span>
+                    <strong><%=item.posts.average(:ratings) ? item.posts.average(:ratings) : '--' %></strong>
+                </div>
+        
+                <div class="property-row-meta-item">
+                    <span><i class="fa fa-pencil"></i></span>
+                    <strong><%=item.posts.count()%></strong>
+                </div>
+        
+                <div class="property-row-meta-item">
+                    <span><i class="fa fa-commenting-o"></i></span>
+                    <strong><%=item.comments.count()%></strong>
+                </div>
+            </div>
+        
+        </div>
+  </div>
+<% end %>

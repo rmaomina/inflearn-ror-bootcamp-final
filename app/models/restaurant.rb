@@ -4,7 +4,8 @@ class Restaurant < ActiveRecord::Base
     
   belongs_to :user
   has_many :posts
+  has_many :comments, :through => :posts
   
-  mount_uploader :images, PostUploader
+  mount_uploaders :images, PostUploader
   serialize :images, JSON
 end
